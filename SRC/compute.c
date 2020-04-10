@@ -8,23 +8,23 @@ DES FONCTIONS
 
 
 /*---------------------------------------
-  Proto: 
+  Proto:
 
-  
-  But: 
 
-  Entrees: 
+  But:
+
+  Entrees:
           --->le tableau des valeurs des pixels de l'image d'origine
-	      (les lignes sont mises les unes à la suite des autres)
+	      (les lignes sont mises les unes ï¿½ la suite des autres)
 	  --->le nombre de lignes de l'image,
 	  --->le nombre de colonnes de l'image,
           --->le tableau des valeurs des pixels de l'image resultat
-	      (les lignes sont mises les unes à la suite des autres)
+	      (les lignes sont mises les unes ï¿½ la suite des autres)
 
 
   Sortie:
 
-  Rem: 
+  Rem:
 
   Voir aussi:
 
@@ -36,7 +36,7 @@ typedef struct{
   int NbChan;
 } ImgDef;
 
-unsigned RgbToGrayScale(ImgDef imgDef, guchar* imgSrc, guchar* imgDst);
+unsigned Rgb2Gray(ImgDef imgDef, guchar* imgSrc, guchar* imgDst);
 
 
 
@@ -44,7 +44,7 @@ unsigned RgbToGrayScale(ImgDef imgDef, guchar* imgSrc, guchar* imgDst);
 
 void ComputeImage(guchar *pucImaOrig, int NbLine, int NbCol, guchar *pucImaRes)
 {
-  ImgDef imgDef = 
+  ImgDef imgDef =
   {
     .TotPix = NbCol * NbLine,
     .NbLine = NbLine,
@@ -54,21 +54,22 @@ void ComputeImage(guchar *pucImaOrig, int NbLine, int NbCol, guchar *pucImaRes)
 
   printf("Segmentation de l'image.... A vous!\n");
 
-  RgbToGrayScale(imgDef, pucImaOrig, pucImaRes);
+  Rgb2Gray(imgDef, pucImaOrig, pucImaRes);
 }
 
 
 
-unsigned RgbToGrayScale(ImgDef imgDef, guchar* imgSrc, guchar* imgDst)
+unsigned Rgb2Gray(ImgDef imgDef, guchar* imgSrc, guchar* imgDst)
 {
-  guchar ucMeanPix;
-
-  for(int iNumPix = 0; iNumPix < imgDef.TotPix * imgDef.NbChan; iNumPix += imgDef.NbChan){
-    /*moyenne sur les composantes RVB */
-    guchar* pixel = imgSrc + iNumPix;
-    ucMeanPix = (*pixel * 2125 + *(pixel+1) * 7154 + *(pixel+2) * 721)/10000;
-    /* sauvegarde du resultat */
-    for(int iNumChannel = 0; iNumChannel < imgDef.NbChan; iNumChannel++)
-      *(imgDst + iNumPix + iNumChannel)= ucMeanPix;
+  guchar ucMeanPx; // uncolored Mean pixel
+  const uint Red = 0, Green = 1, Blue = 2;
+  for(int iPx = 0; iPx < imgDef.TotPix; ++iPx) {
+    iPx *= imgDef.NbChan;
+    guchar* px = imgSrc + iPx;
+    // we add a weight for each R,G, B. That weight comes from: https://scikit-image.org/docs/dev/auto_examples/color_exposure/plot_rgb_to_gray.html?fbclid=IwAR3PC3JwvHGVxgqGHkMl11nUfZz32NcZqIK7M4NfFS6ELyKIiJ2ah_u2NVU
+    ucMeanPx = (px[Red] * 2125 + px[Green] * 7154 + px[Blue] * 721)/10000;
+    for(int iChan = 0; iChan < imgDef.NbChan; ++iChan) {
+       imgDst[iPx + iChan] = ucMeanPx;
+    }
   }
 }
