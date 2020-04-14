@@ -21,14 +21,14 @@ typedef struct {
 } Pixel;
 
 typedef struct {
-	guchar massCenter; // massCenter is an homogeneous px
-	guchar **pixels; // [...]*guchar
+	Pixel massCenter; // massCenter is an homogeneous px
+	Pixel **pixels; // [...]*guchar
 	size_t nbPx;
 } Classe;
 
 typedef struct {
-	const guchar *sortedNeighbors[5]; // include itself.
-	const guchar *pixel; // pixel mustn't be changed.
+	Pixel *sortedNeighbors[5]; // include itself.
+	Pixel *pixel; // pixel mustn't be changed.
 	Classe *classe;
 } PixelClasse;
 
