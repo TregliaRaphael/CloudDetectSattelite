@@ -80,8 +80,8 @@ void baseClasses(PixelClasse *imgPx, ImgPxClasse *iPxC) {
   for (size_t i = 1; i < iPxC->nbClasses; ++i) {
     int nd = 0, od = 0; // new distance, old distance
     for (size_t j = 0; j < 5; ++j) {
-      nd += abs(imgPx->sortedNeighbors[j]->red - iPxC->classes[i].massCenter.red);
-      od += (imgPx->sortedNeighbors[j]->red - imgPx->classe->massCenter.red);
+      nd += abs(*imgPx->sortedNeighbors[j] - iPxC->classes[i].massCenter);
+      od += (*imgPx->sortedNeighbors[j] - imgPx->classe->massCenter);
     }
     if (nd < od) {
       imgPx->classe = &iPxC->classes[i];
@@ -105,7 +105,7 @@ ImgPxClasse* NewImgPxClasse(ImgInfo info, size_t nbClasses, guchar *greyImg) {
    for (size_t j = 0, j_img = 1; j_img < info.NbCol - 1; ++j_img, ++j) {
      iPxC->img[i][j].pixel = &img[i_img][j_img]; // no need to make a copy...
 
-     Pixel *neighbors[5] = { &img[i_img][j_img], &img[i_img - 1][j_img], &img[i_img + 1][j_img], &img[i_img][j_img - 1],  &img[i_img][j_img + 1] };
+     guchar *neighbors[5] = { &img[i_img][j_img], &img[i_img - 1][j_img], &img[i_img + 1][j_img], &img[i_img][j_img - 1],  &img[i_img][j_img + 1] };
      neighborsImg(iPxC, &iPxC->img[i][j], neighbors);
      // here the pixels and neighbors of them are grouped and sorted.
      // set default classe for all of them.
@@ -115,10 +115,7 @@ ImgPxClasse* NewImgPxClasse(ImgInfo info, size_t nbClasses, guchar *greyImg) {
    }
  }
  // No need img anymore.
- /*for(size_t i = 0; i < info.NbLine; ++i) {
-   free(img[i]); // i don't want to free the px, so i don't do: free(*img[i])
- }
- free(img);*/
+ free(img);
  return iPxC;
 }
 
@@ -142,13 +139,28 @@ void ComputeImage(guchar *pucImaOrig, int NbLine, int NbCol, guchar *pucImaRes)
   ImgPxClasse* iPxC = NewImgPxClasse(imgInf, 3, pucImaRes);
   int loopCount = 0;
   int changed = 1;
-  while(loopCount++ < 500 && changed) changed = Update(iPxC);
+  while(loopCount++ < 1000 && changed) changed = Update(iPxC);
 
 
-  for (size_t i = 0; i < iPxC->classes[1].nbPx; ++i) {
-    iPxC->classes[2].pixels[i][0] = 0;
-    iPxC->classes[2].pixels[i][1] = 0;
-    iPxC->classes[2].pixels[i][2] = 0;
+  Pixel W = {
+      .red = 255,
+      .green = 255,
+      .blue = 255
+  }, B = {
+      .red = 0,
+      .green = 0,
+      .blue = 0
+  };
+
+  for (int i = 0; i < iPxC->nbLine; ++i) {
+    for (int j = 0; j < iPxC->nbCol; ++j) {
+      Pixel *px = (Pixel*)iPxC->img[i][j].pixel;
+      if (iPxC->img[i][j].classe == &iPxC->classes[2]) {
+        *px = W;
+      } else {
+        *px = B;
+      }
+    }
   }
 }
 
@@ -168,7 +180,12 @@ unsigned Rgb2Gray(ImgInfo imgInf, guchar* imgSrc, guchar* imgDst)
   }
 }
 
-Pixel pxMedian(Classe *cls) {
+int comp(const void *elem1, const void *elem2) {
+  return **(guchar**)elem1 - **(guchar**)elem2;
+}
+
+guchar pxMedian(Classe *cls) {
+  qsort(cls->pixels, cls->nbPx, sizeof(guchar*), comp);
   return *cls->pixels[cls->nbPx / 2]; // the median
 }
 
@@ -176,8 +193,6 @@ Pixel pxMedian(Classe *cls) {
 int linkPxClass(ImgPxClasse *iPxC, PixelClasse *imgPx) {
   int changed = 0;
   for (size_t i = 0; i < iPxC->nbClasses; ++i) {
-//    free(iPxC->classes[i].pixels);
-//    iPxC->classes[i].pixels = NULL;
     iPxC->classes[i].nbPx = 0;
     int nd = 0, od = 0;
     for (size_t px = 0; px < 5; ++px) {
