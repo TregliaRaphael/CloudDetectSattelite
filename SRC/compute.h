@@ -15,7 +15,13 @@ typedef struct{
 void ComputeImage(guchar *pucImaOrig, int NbLine, int NbCol, guchar *pucImaRes);
 
 typedef struct {
-	int massCenter;
+    guchar red;
+    guchar green;
+    guchar blue;
+} Pixel;
+
+typedef struct {
+	guchar massCenter; // massCenter is an homogeneous px
 	guchar **pixels; // [...]*guchar
 	size_t nbPx;
 } Classe;
@@ -36,4 +42,6 @@ typedef struct {
 
 // TODO: partition this in subfunction and implement it in a .c file.
 ImgPxClasse* NewImgPxClasse(ImgInfo info, size_t nbClasses, guchar *greyImg);
+
+int Update(ImgPxClasse *iPxC); // return weather or not change has been occurred
 #endif /* compute.h */
