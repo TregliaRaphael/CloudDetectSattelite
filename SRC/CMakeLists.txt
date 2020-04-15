@@ -10,6 +10,6 @@ add_executable(imaProjet.exe main.c compute.c compute_misc.c misc.c)
 #-----------linking step
 target_link_libraries( imaProjet.exe ${GTK2_LIBRARIES} )
 
-add_executable(imaProjet_auto.exe main.c compute.c compute_misc.c)
+add_executable(imaProjet_auto.exe main.c compute.c compute_misc.c misc.c)
 target_link_libraries(imaProjet_auto.exe ${GTK2_LIBRARIES})
 target_compile_definitions(imaProjet_auto.exe PUBLIC AUTO)

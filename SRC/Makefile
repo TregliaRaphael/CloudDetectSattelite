@@ -12,8 +12,8 @@ CCFLAGS=-Wall -g `pkg-config --cflags gtk+-2.0`
 LDFLAGS=`pkg-config --libs gtk+-2.0`
 
 #compilation
-OBJ_DEP=compute_misc.o compute.o main.o
-OBJ_FILES=${OBJ}/compute_misc.o ${OBJ}/compute.o ${OBJ}/main.o
+OBJ_DEP=compute_misc.o compute.o main.o misc.o
+OBJ_FILES=${OBJ}/compute_misc.o ${OBJ}/compute.o ${OBJ}/main.o ${OBJ}/misc.o
 
 
 all: ImaProjet.exe ImaProjet_auto.exe

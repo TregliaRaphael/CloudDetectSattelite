@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include "compute.h"
+#include "misc.h"
 
 /*******************************************************
 IL EST FORMELLEMENT INTERDIT DE CHANGER LE PROTOTYPE
@@ -51,17 +52,17 @@ void ComputeImage(guchar *pucImaOrig, int NbLine, int NbCol, guchar *pucImaRes)
   ImgPxClasse* iPxC = NewImgPxClasse(imgInf, nbClass, pucImaRes);
 
   while(Update(iPxC));
-#ifndef AUTO
-  Pixel R = {
-      .red = 200,
-      .green = 0,
-      .blue = 0
-  };
+  if (GetGuiMode()) {
+    Pixel R = {
+        .red = 200,
+        .green = 0,
+        .blue = 0
+    };
 
-  for (size_t i = 0; i < iPxC->classes[nbClass - 1].nbPx; ++i) {
-    *(Pixel*)iPxC->classes[nbClass - 1].pixels[i] = R;
+    for (size_t i = 0; i < iPxC->classes[nbClass - 1].nbPx; ++i) {
+      *(Pixel*)iPxC->classes[nbClass - 1].pixels[i] = R;
+    }
   }
-#endif
   float percent = (100 * (float)iPxC->classes[nbClass - 1].nbPx) / imgInf.TotPix;
   printf("there is: %f%% cloud on the image\n", percent);
   DeleteImgPxClasse(iPxC);

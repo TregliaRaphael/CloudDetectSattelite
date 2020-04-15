@@ -3,8 +3,6 @@
 #include <gtk/gtk.h>
 #include <math.h>
 
-//#define AUTO
-
 #define LargeurImage 360
 
 typedef struct{
