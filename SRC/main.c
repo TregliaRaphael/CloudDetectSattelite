@@ -68,6 +68,13 @@ void ShowImaOrig(GtkButton *button_ok,
   gtk_widget_show_all(*(ppwTabArgs+2));
 }
 
+void display_percent(const char* filename) {
+  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(filename, NULL);
+  if (!pixbuf) perror("file not loadable");
+  guchar *img = gdk_pixbuf_get_pixels(pixbuf);
+  int cols = gdk_pixbuf_get_width(pixbuf), lns = gdk_pixbuf_get_height(pixbuf);
+  ComputeImage(img, lns, cols, img);
+}
 
 /*---------------------------------------
   Proto: 
@@ -138,7 +145,7 @@ fonction principale
 ************************************************/
 int main (int argc, char **argv)
 {
-
+#ifndef AUTO
   /*---------------------------------------------
     Declarations
     ---------------------------------------------*/
@@ -197,10 +204,8 @@ int main (int argc, char **argv)
   GtkWidget *pwButtonAnalyse;
   /*GtkImage de l'image resultat*/
   GtkWidget *pwImaRes;
-
   /* la taille par defaut des images */
   int NbCol=LargeurImage;
-
   /*---------------------------------------------
     actions
     ---------------------------------------------*/
@@ -336,6 +341,12 @@ int main (int argc, char **argv)
   ----------------*/
   gtk_widget_show_all(pwMainWind);
   gtk_main();
-  return(0);
+  return  0;
+#endif
+  if (argc < 2) {
+
+  }
+  display_percent(argv[1]);
+  return 0;
 
 } 
