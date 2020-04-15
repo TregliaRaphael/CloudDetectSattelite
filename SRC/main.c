@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <math.h>
+#include <string.h>
 #include "compute.h"
 
 #include "misc.h"
@@ -114,7 +115,7 @@ void ShowImaComputed(GtkObject *button_analyse,
    pGdkPixbufImaOrig=gtk_image_get_pixbuf(GTK_IMAGE(*(ppwTabArgs+1)));
    if (pGdkPixbufImaOrig == NULL){
      printf("Pas de fichier image originale.\n");
-     exit(0);
+     exit(1);
    }
    /* copie du pixbuff original */
    pGdkPixbufImaRes=gdk_pixbuf_copy(pGdkPixbufImaOrig);
@@ -129,6 +130,7 @@ void ShowImaComputed(GtkObject *button_analyse,
 
    /* on realise le calcul sur l'image */
    ComputeImage(pucImaOrig,NbLine,NbCol,pucImaRes);
+   printf("\n");
 
    /* on vide l'image resultat precedente */
    gtk_image_clear(GTK_IMAGE(*(ppwTabArgs+5)));
@@ -347,6 +349,7 @@ fonction principale
 int main (int argc, char **argv)
 {
 #ifndef AUTO
+//  SetNbClass(4);
   GUI(argc, argv);
   return  0;
 #endif
@@ -354,7 +357,15 @@ int main (int argc, char **argv)
     printUsage(argv[0]);
     rescue(argc, argv);
   }
-  display_percent(argv[1]);
+
+  for (size_t i = 1; i < argc; ++i) {
+    display_percent(argv[i]);
+    if (argc > 2) {
+      printf(" number %d\n", i);
+    } else {
+      printf("\n");
+    }
+  }
   return 0;
 
 } 

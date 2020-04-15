@@ -11,9 +11,8 @@ int GetGuiMode();
 void GUI(int argc, char **argv);
 
 static void printUsage(const char* prgName) {
-  printf("Usage: \n\t- %s <filename...>\n\t- %s -e <filename>\n", prgName, prgName);
+  printf("Usage: \n\t- %s <filename...>", prgName);
   printf("\t\t* <filename...>: a suit a filename on which %s will be execute\n", prgName);
-  printf("\t\t* -e: return the integer percentage of clouds in filename <filename>, or 255 on error\n");
 }
 
 static void rescue(int argc, char **argv) {

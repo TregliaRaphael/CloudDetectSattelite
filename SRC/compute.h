@@ -12,6 +12,9 @@ typedef struct{
   int NbChan;
 } ImgInfo;
 
+void SetNbClass(unsigned int v);
+unsigned int GetNbClass();
+
 void ComputeImage(guchar *pucImaOrig, int NbLine, int NbCol, guchar *pucImaRes);
 
 /**

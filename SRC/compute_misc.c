@@ -88,3 +88,15 @@ void DeleteImgPxClasse(ImgPxClasse *iPxC) {
   free(iPxC->img);
   free(iPxC);
 }
+
+int priv_nbclass = 3;
+
+void SetNbClass(unsigned int v) {
+  if (v < 2)
+    return;
+  priv_nbclass = v;
+}
+
+unsigned int GetNbClass() {
+  return priv_nbclass % 255;
+}

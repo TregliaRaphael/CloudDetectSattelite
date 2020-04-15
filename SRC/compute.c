@@ -47,24 +47,39 @@ void ComputeImage(guchar *pucImaOrig, int NbLine, int NbCol, guchar *pucImaRes)
 
   rgb2Gray(imgInf, pucImaOrig, pucImaRes);
 
-  const int nbClass = 3;
+  const unsigned int nbClass = GetNbClass();
 
   ImgPxClasse* iPxC = NewImgPxClasse(imgInf, nbClass, pucImaRes);
 
   while(Update(iPxC));
-  if (GetGuiMode()) {
-    Pixel R = {
-        .red = 200,
-        .green = 0,
-        .blue = 0
-    };
 
-    for (size_t i = 0; i < iPxC->classes[nbClass - 1].nbPx; ++i) {
-      *(Pixel*)iPxC->classes[nbClass - 1].pixels[i] = R;
+  int nb = 0;
+  Pixel R = {
+      .red = 200,
+      .green = 0,
+      .blue = 0
+  };
+  for (size_t i = 0; i < iPxC->nbClasses; ++i) {
+    if (iPxC->classes[i].massCenter >= 150) {
+      for (size_t j = i; j < iPxC->nbClasses; ++j) {
+        if (GetGuiMode()) {
+          for (size_t i = 0; i < iPxC->classes[j].nbPx; ++i) {
+            *(Pixel*) iPxC->classes[j].pixels[i] = R;
+          }
+        }
+        nb += iPxC->classes[j].nbPx;
+      }
+      break;
     }
   }
-  float percent = (100 * (float)iPxC->classes[nbClass - 1].nbPx) / imgInf.TotPix;
-  printf("there is: %f%% cloud on the image\n", percent);
+
+  for (size_t i = 0; i < iPxC->classes[nbClass - 1].nbPx && iPxC->classes[nbClass - 1].massCenter > 100; ++i) {
+    *(Pixel*)iPxC->classes[nbClass - 1].pixels[i] = R;
+  }
+
+  if (nb == 0 && iPxC->classes[nbClass - 1].massCenter > 100) nb = iPxC->classes[nbClass - 1].nbPx;
+  float percent = (100 * (float)nb) / imgInf.TotPix;
+  printf("there is: %f%% cloud on the image", percent);
   DeleteImgPxClasse(iPxC);
 }
 
