@@ -1,0 +1,10 @@
+Contenu de mon explication sur les raison qui me font penser qu'il est possible d'améliorer l'algorithme...
+
+Sur les graphics donnée par le papier scientifique, on voit que tous les nuages sont détectés vers la valeur 150.
+Aussi c'est pourquoi je pense qu'il est possible de dire que tous les nuages qui sont dans les classes dont la masses est supérieure à 150, sont des nuages.
+
+Ensuite, j'ai aussi regarder les images, et inversement, il est très très très peu probable qu'il y ait des nuages ayant une valeur avoisinant les 100, qui est généralement la valeur prise par le sol.
+
+C'est pourquoi, on peut considérer que si la dernière classe a une masse inférieure à 100, elle n'est pas un nuage. (d'autant plus que s'il n'y a que des classe "en dessous" de 100,  cela devient difficilement distinguable).
+
+Voilà, je pense que cela permet d'avoir un résultat plus précis, mais je n'ai pas fait de teste approfondie, ni d'étude sérieuse, mais j'ai remarqué une plus grande précision sur les images que l'on a eu.
